@@ -1,18 +1,20 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:loadpage/envio.dart';
 import 'package:loadpage/produtos.dart';
-import 'form.dart';
 
-class FormsLogin extends StatefulWidget {
-  const FormsLogin({super.key});
+// ignore: camel_case_types
+class detalheCompra extends StatefulWidget {
+  const detalheCompra({super.key});
 
   @override
   FormsState createState() => FormsState();
 }
 
-class FormsState extends State<FormsLogin> {
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _senha = TextEditingController();
+class FormsState extends State<detalheCompra> {
+  final TextEditingController _selecionado = TextEditingController();
+  final TextEditingController _preco = TextEditingController();
+  final TextEditingController _quantidade = TextEditingController();
 
   Color textColor = Colors.black; // default color
   Color textColorWarning = Colors.grey; // default color
@@ -22,9 +24,9 @@ class FormsState extends State<FormsLogin> {
 
   // simula envia de informação
   void _enviar() {
-    String email = _email.text;
-    String senha = _senha.text;
-
+    String selecionado = _selecionado.text;
+    String preco = _preco.text;
+    String quantidade = _quantidade.text;
     // altera state textColor
     void changeTextColor(Color newColor) {
       setState(() {
@@ -48,7 +50,7 @@ class FormsState extends State<FormsLogin> {
     // define resposta
     setState(() {
       // não informou nome
-      if (email == "" || senha == '') {
+      if (selecionado == "" || preco == '' || quantidade == '') {
         // altera cor do texto
         changeTextColor(Colors.red);
         // altera mensagem
@@ -67,33 +69,22 @@ class FormsState extends State<FormsLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Detalhes'),
       ),
       body: Align(
         alignment: Alignment.topCenter,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 30.0),
-            Container(
-                height: 200,
-                width: 300,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/login.png'),  // Use the relative path here
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
             const SizedBox(height: 16.0),
+            const Text('Detalhes da compra', style: TextStyle(fontSize: 25.0)),
             SizedBox(
               width: 300,
               child: TextField(
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
+                controller: _selecionado,
                 decoration: InputDecoration(
-                  hintText: 'Entre com o email',
-                  prefixIcon: const Icon(Icons.email),
+                  hintText: 'Mostrar Selecionado',
+                  prefixIcon: const Icon(Icons.analytics),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: borderColor),
                   ),
@@ -107,12 +98,31 @@ class FormsState extends State<FormsLogin> {
             SizedBox(
               width: 300,
               child: TextField(
-                controller: _senha,
+                controller: _preco,
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 decoration: InputDecoration(
-                  hintText: 'Insira sua Senha',
-                  prefixIcon: const Icon(Icons.lock),
+                  hintText: 'Insira sua preco',
+                  prefixIcon: const Icon(Icons.shop),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: borderColor),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            SizedBox(
+              width: 300,
+              child: TextField(
+                controller: _quantidade,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'Quantidade:',
+                  prefixIcon: const Icon(Icons.shop),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: borderColor),
                   ),
@@ -123,12 +133,27 @@ class FormsState extends State<FormsLogin> {
               ),
             ),
             const SizedBox(height: 16.0),
+            const Text('total da compra: 0',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const detalheCompra(),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(100, 50),
+              ),
+              child: const Text('Calcular'),
+            ),
+            const SizedBox(height: 16.0),
             !envio
                 ? SizedBox(
-                    // botões
                     width: 300,
-                    // Row determina que os widgets serão acrescentados
-                    // lado a lado
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -138,32 +163,32 @@ class FormsState extends State<FormsLogin> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const ListagemProdutos(
-                                  ),
+                                  builder: (context) =>
+                                      const ListagemProdutos(),
                                 ),
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(100, 20), // Largura e altura desejadas
-                              ),
-                            child: const Text('Enviar'),
+                              fixedSize: const Size(100, 20),
+                            ),
+                            child: const Text('Voltar'),
                           ),
                           const SizedBox(height: 16.0),
-                        ElevatedButton(
+                          ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const Forms(),
+                                  builder: (context) => const envioProduto(),
                                 ),
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(100, 20), 
-                              ),
-                            child: const Text('Cadastro'),
-                          ),]))
+                              fixedSize: const Size(100, 20),
+                            ),
+                            child: const Text('Enviar'),
+                          ),
+                        ]))
                 : const SizedBox.shrink(),
             const SizedBox(height: 16.0),
           ],
